@@ -16,10 +16,15 @@ SECRET_KEY = 'jungle'
 @app.route('/')
 def listPage():
     token_receive = request.cookies.get('mytoken')
+    reservations = []
+    week = ['월', '화', '수', '목', '금', '토', '일']
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
-        return render_template('index.html', user_name = user_info['name'], user_id = user_info['userID'])
+        for i in range(0, 7):
+            reservation = list(dblaundry.reservations.find({'date':i}, {'_id':False}))
+            reservations.append(reservation)
+        return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
     except jwt.ExpiredSignatureError:
         return redirect('loginpage')
     except jwt.exceptions.DecodeError:
@@ -60,7 +65,7 @@ def login():
     if result is not None:
         payload = {
             'id':id_receive,
-            'exp':datetime.utcnow() + timedelta(seconds=10)
+            'exp':datetime.utcnow() + timedelta(hours=1)
         }
         print(payload)
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
