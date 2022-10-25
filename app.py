@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
 dblaundry = client.dblaundry
 
 from datetime import datetime, timedelta
@@ -17,7 +17,7 @@ def listPage():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = dblaundry.user.find_one({'id':payload['id']})
+        user_info = dblaundry.users.find_one({'id':payload['id']})
         return render_template('index.html', user_name = user_info['name'], user_id = user_info['userID'])
     except jwt.ExpiredSignatureError:
         return redirect('loginpage')
@@ -33,7 +33,7 @@ def loginPage():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = dblaundry.user.find_one({'id':payload['id']})
+        user_info = dblaundry.users.find_one({'id':payload['id']})
         return redirect('/')
     except jwt.ExpiredSignatureError:
         return render_template('login.html')
@@ -45,7 +45,7 @@ def login():
     id_receive = request.form['id_give']
     pw_receive = request.form['pw_give'] 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
-    result = dblaundry.user.find_one({'id':id_receive, 'pw':pw_hash}, {'_id':False})
+    result = dblaundry.users.find_one({'id':id_receive, 'pw':pw_hash}, {'_id':False})
 
     if result is not None:
         payload = {
@@ -71,12 +71,12 @@ def signup():
     gender_receive = request.form['gender_give']
     if name_receive == '' or id_receive == '' or pw_receive == '':
         return jsonify({'result':'success', 'msg':'None'})
-    if dblaundry.user.find_one({'name':name_receive}) is not None:
+    if dblaundry.users.find_one({'name':name_receive}) is not None:
         return jsonify({'result':'success', 'msg':'nameoverlap'})
     else:
         userID = str(uuid.uuid4())
         pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
-        dblaundry.user.insert_one({
+        dblaundry.users.insert_one({
             'name':name_receive,
             'id':id_receive,
             'pw':pw_hash,
