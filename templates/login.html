@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kratopia</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
+        integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style></style>
+    <script>
+        function login() {
+            pw = $('#user_pw').val()
+            id = $('#user_id').val()
+            $.ajax({
+                type: 'POST',
+                data: { id_give: id, pw_give: pw },
+                url: '/login',
+                success: function (res) {
+                    if (res['result'] == 'success') {
+                        $.cookie('mytoken', res['token'], { expires: 7 })
+                        alert('로그인')
+                        window.location.href='/'
+                    }else{
+                        alert(res['msg'])
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <a href="/">
+        <h1>Kratopia</h1>
+    </a>
+    <div>
+        <label for="user_id">ID</label>
+        <input id="user_id" type="text" autocomplete="off">
+    </div>
+    <div>
+        <label for="user_pw">PW</label>
+        <input id="user_pw" type="password">
+    </div>
+    <div>
+        <button onclick="login()">login</button>
+    </div>
+    <div>
+        <a href="/signuppage">회원가입</a>
+    </div>
+</body>
+
+</html>
