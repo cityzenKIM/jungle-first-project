@@ -17,11 +17,27 @@ SECRET_KEY = 'jungle'
 
 @app.route('/')
 def listPage():
+    laundrydata_mon = list(dblaundry.week.find({'date':'월'},{'_id':0}))
+    laundrydata_tue = list(dblaundry.week.find({'date':'화'},{'_id':0}))
+    laundrydata_wed = list(dblaundry.week.find({'date':'수'},{'_id':0}))
+    laundrydata_thu = list(dblaundry.week.find({'date':'목'},{'_id':0}))
+    laundrydata_fri = list(dblaundry.week.find({'date':'금'},{'_id':0}))
+    laundrydata_sat = list(dblaundry.week.find({'date':'토'},{'_id':0}))
+    laundrydata_sun = list(dblaundry.week.find({'date':'일'},{'_id':0}))
+    
+    laundrydata_sum = []
+    laundrydata_sum.append(laundrydata_mon)
+    laundrydata_sum.append(laundrydata_tue)
+    laundrydata_sum.append(laundrydata_wed)
+    laundrydata_sum.append(laundrydata_thu)
+    laundrydata_sum.append(laundrydata_fri)
+    laundrydata_sum.append(laundrydata_sat)
+    laundrydata_sum.append(laundrydata_sun)
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
-        return render_template('index.html', user_name = user_info['name'], user_id = user_info['userID'])
+        return render_template('index.html', laundryDatas_sum = laundrydata_sum, user_name = user_info['name'], user_id = user_info['userID'])
     except jwt.ExpiredSignatureError:
         return redirect('loginpage')
     except jwt.exceptions.DecodeError:
