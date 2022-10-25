@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    
+    <script
+        src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+        crossorigin="anonymous"></script>
+    <title>Kratopia</title>
+    <style>
+        .modal_button{ position:absolute; top:50%; left:50%;
+        width:120px; height:30px; margin-top:-15px; margin-left:-60px;
+        line-height:15px; cursor:pointer;
+        }
+
+        .modal{ 
+        position:absolute; width:100%; height:100%; background: rgba(0,0,0,0.8); top:0; left:0; display:none;
+        }
+
+        .modal_content{
+        width:400px; height:300px;
+        background:#fff; border-radius:10px;
+        position:relative; top:50%; left:50%;
+        margin-top:-100px; margin-left:-200px;
+        text-align:center;
+        box-sizing:border-box; padding:74px 0;
+        line-height:23px; cursor:pointer;
+        } 
+    </style>
+    <script>
+        
+        
+        function makeReservation(id, name, userId) {
+            $.ajax({
+                type: "POST",
+                url: "/reserve",
+                data: {id_give: id, name_give: name, userId_give: userId},
+                success: function(res) {
+                    if (res["result"] == "success") {
+                        alert("예약 성공!")
+                        window.location.reload();
+                    } else {
+                        alert("서버 오류!")
+                    }
+                }
+            })
+        }
+
+        function cancelReservation(id) {
+            console.log("in")
+            $.ajax({
+                type: "POST",
+                url: "/reserve/delete",
+                data: {id_give: id},
+                success: function(res) {
+                    if (res["result"] == "success") {
+                        alert("취소 성공!")
+                        window.location.reload();
+                    } else {
+                        alert("서버 오류!")
+                    }
+                }
+            })
+        }
+
+        $(function(){ 
+
+            $(".button_modal").click(function(){
+            $(".modal").fadeIn();
+            });
+
+            $("#button_reserve").click(function(){
+                makeReservation("6357bb1f5b6470e4ec6e293c", "test_name", "test");
+                $(".modal").fadeOut();
+            });
+            $("#button_cancel").click(function(){
+                cancelReservation("6357bb1f5b6470e4ec6e293c");
+                $(".modal").fadeOut();
+            });
+
+            $(".modal_content").click(function(){
+                $(".modal").fadeOut();
+            });
+
+        });
+    </script>
+</head>
+<body>
+    
+    <button class="button_modal">시간표</button>
+    <div class="modal">
+        <div class="modal_content" 
+           title="reserve">
+            {% if reservation.name %}
+                <p>예약자 {{ reservation.name }}님</p>
+                <p>이용시간: {{ reservation.time }}시 ~ {{ reservation.time + 1 }}시 </p>
+            {% else %}
+                <p>예약 가능</p>
+                <p>이용시간: {{ reservation.time }}시 ~ {{ reservation.time + 1 }}시 </p>
+            {% endif %}
+        
+            {% if reservation.userId == userId %}
+                <button id="button_cancel">취소하기</button>    
+            {% else %}
+                <button id="button_reserve">예약하기</button>            
+            {% endif %}
+        </div>
+      </div>
+      
+    </div>
+</body>
+</html>

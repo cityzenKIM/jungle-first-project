@@ -5,18 +5,149 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Kratopia</title>
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
-        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <script>
-        
-    </script>
-</head>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" 
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
+    <script>
+        // $(document).ready(function() {
+        //     showReservation();
+        // });
+
+
+        function consolelog(logcontent){
+            console.log(logcontent);
+        }
+    </script>
+    <style>
+
+        table,
+    
+        th,
+    
+        td {
+    
+          border: 1px solid #000;
+    
+        }
+    
+      </style>
+
+
+</head>
+<title>Kratopia 메인</title>
 <body>
-    <a href="/">
-        <h1>Kratopia</h1>
-    </a>
+    <h1>hello world!</h1>
+    <table>
+        <tr>
+            <th onclick="consolelog()" >Month</th> <th>예금</th>
+        </tr>
+        <tr>
+            <th>January</th> <th>8000</th>
+        </tr>
+    </table>
+<div>
+    <div>
+        <div>07:00~08:00</div>
+        <div>08:00~09:00</div>
+        <div>09:00~10:00</div>
+        <div>10:00~11:00</div>
+        <div>11:00~12:00</div>
+        <div>12:00~13:00</div>
+        <div>13:00~14:00</div>
+        <div>14:00~15:00</div>
+        <div>15:00~16:00</div>
+        <div>16:00~17:00</div>
+        <div>17:00~18:00</div>
+        <div>18:00~19:00</div>
+        <div>19:00~20:00</div>
+        <div>20:00~21:00</div>
+        <div>21:00~22:00</div>
+        <div>22:00~23:00</div>
+        <div>23:00~24:00</div>
+    </div>
+    
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[0] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}
+                    <textarea>{{laundrydata.name}}{{laundrydata.userid}}</textarea>></div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[1] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}{{laundrydata.name}}{{laundrydata.userid}}</div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[2] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}{{laundrydata.name}}{{laundrydata.userid}}</div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[3] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}{{laundrydata.name}}{{laundrydata.userid}}</div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[4] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}{{laundrydata.name}}{{laundrydata.userid}}</div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[5] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}{{laundrydata.name}}{{laundrydata.userid}}</div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+
+    <div>
+        <div>
+        {% for laundrydata in laundryDatas_sum[6] %}
+            <div id = "{{laundrydata.time}}{{laundrydata.date}}">
+                {{laundrydata.time}}
+                <div>{{laundrydata.date}}{{laundrydata.name}}{{laundrydata.userid}}</div>
+            </div>
+        {% endfor%}
+        </div>
+    </div>
+</div>>
+
+    <button onclick="console.log('되냐..?')">예약버튼</button>
 </body>
 
 </html>
