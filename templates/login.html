@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kratopia</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
+        integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style></style>
+    <script>
+        
+        function login() {
+            pw = $('#user_pw').val()
+            id = $('#user_id').val()
+            $.ajax({
+                type: 'POST',
+                data: { id_give: id, pw_give: pw },
+                url: '/login',
+                success: function (res) {
+                    if (res['result'] == 'success') {
+                        $.cookie('mytoken', res['token'], { expires: 7 })
+                        alert('로그인')
+                        window.location.href = '/'
+                    } else {
+                        alert(res['msg'])
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body class="w-full bg-black">
+    <a href="/" class="mt-6 ml-6 inline-block fixed">
+        <h1 class="text-4xl text-green-700 font-bold">Kratopia</h1>
+    </a>
+    <div class="flex h-screen flex-col items-center justify-center">
+        <div class="w-60 flex justify-between">
+            <label for="user_id" class="text-2xl text-green-700 font-semibold">ID</label>
+            <input id="user_id" class="w-4/5 rounded-lg" type="text" autocomplete="off">
+        </div>
+        <div class="w-60 flex justify-between mt-6">
+            <label for="user_pw" class="text-2xl text-green-700 font-semibold">PW</label>
+            <input id="user_pw" class="w-4/5 rounded-lg" type="password">
+        </div>
+        <div class="my-6">
+            <button onclick="login()" class="text-2xl text-green-700 font-semibold">login</button>
+        </div>
+        <div class="">
+            <a href="/signuppage" class="text-1xl text-green-700 font-semibold">회원가입</a>
+        </div>
+    </div>
+</body>
+
+</html>
