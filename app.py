@@ -30,7 +30,15 @@ def reservePage():
 
 @app.route('/loginpage')
 def loginPage():
-    return render_template('login.html')
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = dblaundry.user.find_one({'id':payload['id']})
+        return redirect('/')
+    except jwt.ExpiredSignatureError:
+        return render_template('login.html')
+    except jwt.exceptions.DecodeError:
+        return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -42,7 +50,7 @@ def login():
     if result is not None:
         payload = {
             'id':id_receive,
-            'exp':datetime.utcnow() + timedelta(seconds=5)
+            'exp':datetime.utcnow() + timedelta(seconds=10)
         }
         print(payload)
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
