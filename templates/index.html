@@ -54,9 +54,10 @@
                 success: function (res) {
                     if (res["result"] == "success") {
                         alert("예약 성공!")
-                        window.location.href = '/';
+                        window.location.reload();
                     } else {
                         alert(res["msg"])
+                        window.location.reload();
                     }
                 }
             })
@@ -70,10 +71,10 @@
                 success: function (res) {
                     if (res["result"] == "success") {
                         alert("취소 성공!")
-                        window.location.href = '/';
+                        window.location.reload();
                     } else {
                         alert("서버 오류!")
-                    }
+                        window.location.reload()                    }
                 }
             })
         }
@@ -101,12 +102,10 @@
             $("#button_reserve").click(function () {
                 makeReservation(id, currentUserId, currentUserName);
                 $(".modal").fadeOut();
-                window.location.href = '/';
             });
             $("#button_cancel").click(function () {
                 cancelReservation(id);
                 $(".modal").fadeOut();
-                window.location.href = '/'
             });
 
         })
