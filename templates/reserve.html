@@ -43,7 +43,7 @@
                 success: function(res) {
                     if (res["result"] == "success") {
                         alert("예약 성공!")
-                        window.location.reload();
+                        window.location.href='/';
                     } else {
                         alert("서버 오류!")
                     }
@@ -60,31 +60,57 @@
                 success: function(res) {
                     if (res["result"] == "success") {
                         alert("취소 성공!")
-                        window.location.reload();
+                        window.location.href = '/';
                     } else {
                         alert("서버 오류!")
                     }
                 }
             })
         }
+        function makeModal(id, time, name, userId, currentUserId) {
+            let temp_html = `<div class="modal_content" title="reserve">`
+            if (!name) {
+                temp_html += `<p>예약 가능</p>`
+            } else {
+                temp_html += `<p>예약자 {name}님</p>`        
+            }
+            temp_html += `<p>이용시간: ${time}시 ~ ${time + 1 }}시 </p>`
+            if (userId == currentUserId) {
+                temp_html += `<button id="button_cancel">취소하기</button>`
+            } else {
+                temp_html += `<button id="button_reserve">예약하기</button>`
+            }
+            temp_html += `</div>`
+            $(".card").append(temp_html)
+        }
+        $(".card").click(function(){
+                let id = $(this).child.("id")
+                let time = $(this).attr("time")
+                let userId = $(this).attr("userId")
+                let currentUserId = $(this).attr("currentUserId")
+                makeModal(id, time, name, userId, currentUserId)
+                $(".modal").fadeIn();
+        });
 
         $(function(){ 
 
-            $(".button_modal").click(function(){
             $(".modal").fadeIn();
-            });
 
             $("#button_reserve").click(function(){
                 makeReservation("6357bb1f5b6470e4ec6e293c", "test_name", "test");
                 $(".modal").fadeOut();
+                window.location.href = '/';
             });
             $("#button_cancel").click(function(){
                 cancelReservation("6357bb1f5b6470e4ec6e293c");
                 $(".modal").fadeOut();
+                window.location.href = '/'
             });
 
             $(".modal_content").click(function(){
                 $(".modal").fadeOut();
+                window.location.href = '/';
+                
             });
 
         });
@@ -92,8 +118,8 @@
 </head>
 <body>
     
-    <button class="button_modal">시간표</button>
-    <div class="modal">
+    <!-- <button class="button_modal">시간표</button> -->
+    <!-- <div class="modal">
         <div class="modal_content" 
            title="reserve">
             {% if reservation.name %}
@@ -112,6 +138,9 @@
         </div>
       </div>
       
+    </div> -->
+    <div class="card">
+        <div id="" time="" name="", userId="", currentUserId=""></div>
     </div>
 </body>
 </html>
