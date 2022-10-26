@@ -33,29 +33,30 @@
     </style>
     <script>
 
-        function makeModal(id, time, name, userId) {
+        function makeModal(id, time, name, userId, currentUserId, currentUserName) {
             let temp_html = `<div class="modal">
                 <div class="modal_content" title="reserve">`
-            if (name == "False") {
-                temp_html += `<p>예약 가능</p>`
+            if (name == "False" || name == "false") {
+                temp_html += `<p>{{ user_name }}님 예약 가능</p>
+                    <p>이용시간: ${time}시 ~ ${time + 1}시 </p>
+                    <button id="button_reserve">예약하기</button>`
             } else {
-                temp_html += `<p>예약자 ${name}님</p>`        
+                temp_html += `<p>예약자 ${name}님</p>
+                <p>이용시간: ${time}시 ~ ${time + 1}시 </p>`
+                if (userId == currentUserId){
+                    temp_html += `<button id="button_cancel">취소하기</button>`
+                }  
             }
-            temp_html += `<p>이용시간: ${time}시 ~ ${time + 1}시 </p>
-                {% if userId == user_id %}
-                    <button id="button_cancel">취소하기</button>
-                {% else %}
-                    <button id="button_reserve">예약하기</button>
-                {% endif %}
-                </div></div>`
+            temp_html += `</div></div>`
+                
             return temp_html
         }
 
-        function makeReservation(id, name, userId) {
+        function makeReservation(id, currentUserId, currentUserName) {
             $.ajax({
                 type: "POST",
                 url: "/reserve",
-                data: {id_give: id, name_give: name, userId_give: userId},
+                data: {id_give: id, name_give: currentUserName, userId_give: currentUserId},
                 success: function(res) {
                     if (res["result"] == "success") {
                         alert("예약 성공!")
@@ -68,7 +69,6 @@
         }
 
         function cancelReservation(id) {
-            console.log("in")
             $.ajax({
                 type: "POST",
                 url: "/reserve/delete",
@@ -85,23 +85,26 @@
         }
         $(document).on("click", ".card", function(){
 
-                    let id = $(this).children("#id").val()
-                    let time = Number($("#time").text())
-                    let userId = $("#userID").val()
-                    let name = $("#name").val()
-                    console.log(id, time, userId, name)
-                    let temp_html = makeModal(id, time, name, userId)
+                    let id = $(this).attr("id");
+                    let time = Number($(this).children("#time").text());
+                    let userId = $(this).children("#userID").val();
+                    let name = $(this).children("#name").val();
+                    let currentUserId = $("#currentUserId").val();
+                    let currentUserName = $("#currentUserName").val();
+
+                    let temp_html = makeModal(id, time, name, userId, currentUserId, currentUserName)
+
                     $(this).parent().parent().parent().append(temp_html);
 
                     $(".modal").fadeIn();
 
-                    $("#button_reserve").click(function(){
-                        makeReservation("6357bb1f5b6470e4ec6e293c", "test_name", "test");
+                    $("#button_reserve").click(function() {
+                        makeReservation(id, currentUserId, currentUserName);
                         $(".modal").fadeOut();
                         window.location.href = '/';
                     });
                     $("#button_cancel").click(function(){
-                        cancelReservation("6357bb1f5b6470e4ec6e293c");
+                        cancelReservation(id);
                         $(".modal").fadeOut();
                         window.location.href = '/'
                     });
@@ -122,11 +125,12 @@
     </a>
 
     <div>
+        <span>{{reservations[0][0].class}}반!</span>
         {% for date in range(7) %}
         <div class="week">
             <span>{{week[date]}}</span>
             {% for time in range(17) %}
-            <div class="card">
+            <div id="{{reservations[date][time].timeID}}" class="card">
                 <span id="time">{{reservations[date][time].time}}</span>
                 <input id="date" type="hidden" value={{reservations[date][time].date}}>
                 <input id="userID" type="hidden" value={{reservations[date][time].userID}}>
@@ -140,6 +144,9 @@
             {% endfor %}
         </div>
         {% endfor %}
+        <input id="currentUserId" type="hidden" value={{user_id}}>
+        <input id="currentUserName" type="hidden" value={{user_name}}>
+
     </div>
 </body>
 
