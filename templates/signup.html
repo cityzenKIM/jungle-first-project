@@ -10,9 +10,6 @@
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <style></style>
     <script>
-        const regexNAME = new RegExp('[a-zA-Z가-힣0-9-_]', 'g')
-        const regexID = new RegExp('[a-zA-Z0-9]', 'g')
-        const regexPW = new RegExp('[a-zA-Z0-9!@#$%^&*]', 'g')
         function signUp() {
             name = $('#user_name').val()
             id = $('#user_id').val()
@@ -20,38 +17,35 @@
             pwck = $('#user_pwck').val()
             gender = $('input[name=gender]').val()
             jungle_class = $('input[name=class]').val()
-            if (regexNAME.test(name) == false) {
-                alert('이름은 영문, 한글, -, _ 만 가능합니다.')
-            } else if (regexID.test(id) == false) {
-                alert('아이디는 영문, 숫자만 가능합니다.')
-            } else if (regexPW.test(pw) == false) {
-                alert('비밀번호는 영문, 숫자, 특수문자만 가능합니다.')
-            } else {
-                if (pw == pwck) {
-                    $.ajax({
-                        type: 'POST',
-                        data: { name_give: name, id_give: id, pw_give: pw, gender_give: gender, jungle_class_give: jungle_class },
-                        url: '/signup',
-                        success: function (res) {
-                            if (res['result'] == 'success') {
-                                if (res['msg'] == 'nameoverlap') {
-                                    alert('이름이 중복됩니다.')
-                                    $('#user_name').val('').focus()
-                                } else if (res['msg'] == 'None') {
-                                    alert('모두 입력해주세요')
-                                } else {
-                                    alert('가입완료')
-                                    window.location.href='/loginpage'
-                                }
-                            } else {
-                                alert('서버오류')
-                            }
+            if (pw == pwck) {
+                $.ajax({
+                    type: 'POST',
+                    data: { name_give: name, id_give: id, pw_give: pw, gender_give: gender, jungle_class_give: jungle_class },
+                    url: '/signup',
+                    success: function (res) {
+                        if (res['result'] == 'nameerr') {
+                            alert(res['msg'])
+                        } else if (res['result'] == 'iderr') {
+                            alert(res['msg'])
+                            $('#user_id').val('').focus()
+                        } else if (res['result'] == 'pwerr') {
+                            alert(res['msg'])
+                            $('#user_name').val('').focus()
+                        } else if (res['result'] == 'nameoverlap') {
+                            alert(res['msg'])
+                        } else if (res['result'] == 'idoverlap') {
+                            alert(res['msg'])
+                        } else if (res['result'] == 'None') {
+                            alert(res['msg'])
+                        } else {
+                            alert('가입완료')
+                            window.location.href='/loginpage'
                         }
-                    })
-                } else {
-                    alert('비밀번호가 다릅니다.')
-                    $('#user_pwck').val('').focus()
-                }
+                    }
+                })
+            } else {
+                alert('비밀번호가 다릅니다.')
+                $('#user_pwck').val('').focus()
             }
         }
     </script>
@@ -62,7 +56,7 @@
         <h1>Kratopia</h1>
     </a>
     <div>
-        <label for="user_name">name</label>
+        <label for="user_name">이름</label>
         <input id="user_name" type="text" autocomplete="off" required>
     </div>
     <div>

@@ -1,8 +1,10 @@
 from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
+import certifi
+ca=certifi.where()
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
+client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile=ca)
 dblaundry = client.dblaundry
 
 import datetime
@@ -10,6 +12,7 @@ from bson import ObjectId
 import hashlib
 import jwt
 import uuid
+import re
 
 SECRET_KEY = 'jungle'
 
@@ -107,9 +110,17 @@ def signup():
     jgclass_receive = request.form['jungle_class_give']
     gender_receive = request.form['gender_give']
     if name_receive == '' or id_receive == '' or pw_receive == '':
-        return jsonify({'result':'success', 'msg':'None'})
-    if dblaundry.users.find_one({'name':name_receive}) is not None:
-        return jsonify({'result':'success', 'msg':'nameoverlap'})
+        return jsonify({'result':'None', 'msg':'모두 입력해주세요'})
+    elif re.search(r'[a-zA-Z가-힣]{2,10}$', name_receive) is None:
+        return jsonify({'result':'nameerr', 'msg':'이름은 숫자, 특수문자 제외 2~10자까지만 사용가능합니다.'})
+    elif re.search(r'[A-Za-z0-9!@#$%^&*]{4,10}$', id_receive) is None:
+        return jsonify({'result':'iderr', 'msg':'아이디는 한글 제외 4~10자까지만 사용가능합니다.'})
+    elif re.search(r'[a-zA-Z0-9!@#$%^&*]{4,20}$', pw_receive) is None:
+        return jsonify({'result':'pwerr', 'msg':'패스워드는 한글 제외 4~20자까지만 사용가능합니다.'})
+    elif dblaundry.users.find_one({'name':name_receive}) is not None:
+        return jsonify({'result':'nameoverlap', 'msg':'이름이 중복됩니다.'})
+    elif dblaundry.users.find_one({'id':id_receive}) is not None:
+        return jsonify({'result':'idoverlap', 'msg':'아이디가 중복됩니다.'})
     else:
         userID = str(uuid.uuid4())
         pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
