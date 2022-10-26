@@ -132,4 +132,4 @@ def signup():
         return jsonify({'result':'success', 'msg':'signup'})
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+    app.run('15.165.248.49', port=5000)
