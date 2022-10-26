@@ -137,7 +137,7 @@
             <span class="text-4xl text-green-700 font-bold text-center mb-6">{{week[date]}}</span>
             {% for time in range(17) %}
             {% if reservations[date][time].userID == False %}
-            <div id="{{reservations[date][time].timeID}}" class="card w-40 text-center mb-2 cursor-pointer">
+            <div id="{{reservations[date][time].timeID}}" class="card w-40 text-center mb-2 cursor-pointer ease-out duration-300 hover:bg-slate-300">
                 <div>
                     <span id="time">{{reservations[date][time].time}}</span><span>시</span>
                 </div>
@@ -151,7 +151,7 @@
                 {% endif %}
             </div>
             {% elif reservations[date][time].userID == user_id %}
-            <div id="{{reservations[date][time].timeID}}" class="card w-40 text-center mb-2 bg-orange-600 text-white cursor-pointer">
+            <div id="{{reservations[date][time].timeID}}" class="card w-40 text-center mb-2 bg-orange-600 text-white cursor-pointer ease-out duration-300 hover:bg-orange-700">
                 <div>
                     <span id="time">{{reservations[date][time].time}}</span><span>시</span>
                 </div>
@@ -165,7 +165,7 @@
                 {% endif %}
             </div>
             {% else %}
-            <div id="{{reservations[date][time].timeID}}" class="card w-40 text-center mb-2 bg-indigo-500 text-white cursor-pointer">
+            <div id="{{reservations[date][time].timeID}}" class="card w-40 text-center mb-2 bg-indigo-500 text-white cursor-pointer ease-out duration-300 hover:bg-indigo-600">
                 <div>
                     <span id="time">{{reservations[date][time].time}}</span><span>시</span>
                 </div>
