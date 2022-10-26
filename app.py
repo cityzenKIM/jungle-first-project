@@ -28,12 +28,6 @@ def listPage():
         dblaundry.reservations.update_many({'date':weekDay['weekday']}, {'$set':{'name':False, 'userID':False}})
         dblaundry.thisweekday.update_one({'week':'day'}, {'$set':{'weekday':thisWeekDay}})
     try:
-        # Class = ['red', 'blue']
-        # for c in range(2):
-        #     for date in range(7):
-        #         for time in range(7, 24):
-        #             timeID = str(uuid.uuid4())
-        #             dblaundry.reservations.insert_one({'class': Class[c],'timeID':timeID , 'date':date, 'time':time, 'name':False, 'userID':False})
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
         if user_info['class'] == 'red':
