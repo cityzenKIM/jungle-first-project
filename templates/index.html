@@ -16,7 +16,7 @@
         }
     </style>
     <script>
-        function reservation(){
+        function reservation() {
             alert('예약')
         }
     </script>
@@ -28,11 +28,12 @@
     </a>
 
     <div>
+        <span>{{reservations[0][0].class}}반!</span>
         {% for date in range(7) %}
         <div class="week">
             <span>{{week[date]}}</span>
             {% for time in range(17) %}
-            <div class="card" onclick="reservation()">
+            <div id="{{reservations[date][time].timeID}}" class="card" onclick="reservation()">
                 <span id="time">{{reservations[date][time].time}}</span>
                 <input id="date" type="hidden" value={{reservations[date][time].date}}>
                 <input id="userID" type="hidden" value={{reservations[date][time].userID}}>
