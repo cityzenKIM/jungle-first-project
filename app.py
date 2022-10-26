@@ -5,7 +5,8 @@ from pymongo import MongoClient
 client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
 dblaundry = client.dblaundry
 
-from datetime import datetime, timedelta
+import datetime
+from datetime import timedelta, datetime
 from bson import ObjectId
 import hashlib
 import jwt
@@ -19,12 +20,24 @@ def listPage():
     reservations = []
     week = ['월', '화', '수', '목', '금', '토', '일']
     try:
+        # Class = ['red', 'blue']
+        # for c in range(2):
+        #     for date in range(7):
+        #         for time in range(7, 24):
+        #             timeID = str(uuid.uuid4())
+        #             dblaundry.reservations.insert_one({'class': Class[c],'timeID':timeID , 'date':date, 'time':time, 'name':False, 'userID':False})
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
-        for i in range(0, 7):
-            reservation = list(dblaundry.reservations.find({'date':i}, {'_id':False}))
-            reservations.append(reservation)
-        return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
+        if user_info['class'] == 'red':
+            for i in range(0, 7):
+                reservation = list(dblaundry.reservations.find({'date':i, 'class':'red'}, {'_id':False}))
+                reservations.append(reservation)
+            return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
+        elif user_info['class'] == 'blue':
+            for i in range(0, 7):
+                reservation = list(dblaundry.reservations.find({'date':i, 'class':'blue'}, {'_id':False}))
+                reservations.append(reservation)
+            return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
     except jwt.ExpiredSignatureError:
         return redirect('loginpage')
     except jwt.exceptions.DecodeError:
@@ -61,13 +74,12 @@ def login():
     pw_receive = request.form['pw_give'] 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
     result = dblaundry.users.find_one({'id':id_receive, 'pw':pw_hash}, {'_id':False})
-
     if result is not None:
         payload = {
             'id':id_receive,
             'exp':datetime.utcnow() + timedelta(hours=1)
         }
-        print(payload)
+        # print(payload)
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result':'success', 'token':token})
     else:
