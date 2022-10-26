@@ -51,18 +51,6 @@ def listPage():
     except jwt.exceptions.DecodeError:
         return redirect('loginpage')
 
-@app.route('/reservepage')
-def reservePage():
-    # time_receive = request.form['time_give']
-    # id_receive = request.form['id_give']
-    # name_receive = request.form['name_receive']
-    time_receive = 9
-    userId_receive = "1234"
-    name_receive = "김태준"
-    reservation = {'time': time_receive, 'userId':  userId_receive, 'name': name_receive}
-    userId = "1234"
-
-    return render_template('reserve.html', reservation=reservation, userId=userId)
 
 @app.route('/loginpage')
 def loginPage():
@@ -104,14 +92,14 @@ def update_reservation():
     name_receive = request.form['name_give']
     userId_receive = request.form['userId_give']
    
-    dblaundry.reservations.find_one_and_update({'_id': ObjectId(id_receive)}, {'$set': {'name': name_receive, 'userId': userId_receive}})
+    dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
 
 # 예약취소 api
 @app.route('/reserve/delete', methods=["POST"])
 def delete_reservation():
     id_receive = request.form['id_give']
-    dblaundry.reservations.find_one_and_update({'_id': ObjectId(id_receive)}, {'$set': {'name': '', 'userId': ''}})
+    dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': False, 'userID': False}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
 
 @app.route('/signup', methods=['POST'])
@@ -122,11 +110,17 @@ def signup():
     jgclass_receive = request.form['jungle_class_give']
     gender_receive = request.form['gender_give']
     if name_receive == '' or id_receive == '' or pw_receive == '':
-        return jsonify({'result':'success', 'msg':'None'})
+        return jsonify({'result':'None', 'msg':'모두 입력해주세요'})
+    elif re.search(r'[a-zA-Z가-힣]{2,10}$', name_receive) is None:
+        return jsonify({'result':'nameerr', 'msg':'이름은 숫자, 특수문자 제외 2~10자까지만 사용가능합니다.'})
+    elif re.search(r'[A-Za-z0-9!@#$%^&*]{4,10}$', id_receive) is None:
+        return jsonify({'result':'iderr', 'msg':'아이디는 한글 제외 4~10자까지만 사용가능합니다.'})
+    elif re.search(r'[a-zA-Z0-9!@#$%^&*]{4,20}$', pw_receive) is None:
+        return jsonify({'result':'pwerr', 'msg':'패스워드는 한글 제외 4~20자까지만 사용가능합니다.'})
     elif dblaundry.users.find_one({'name':name_receive}) is not None:
-        return jsonify({'result':'success', 'msg':'nameoverlap'})
+        return jsonify({'result':'nameoverlap', 'msg':'이름이 중복됩니다.'})
     elif dblaundry.users.find_one({'id':id_receive}) is not None:
-        return jsonify({'result':'success', 'msg':'idoverlap'})
+        return jsonify({'result':'idoverlap', 'msg':'아이디가 중복됩니다.'})
     else:
         userID = str(uuid.uuid4())
         pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
