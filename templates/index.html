@@ -23,22 +23,23 @@
         }
         function makeModal(id, time, name, userId, currentUserId, currentUserName) {
             let temp_html = `<div class="modal flex items-center justify-center fixed w-full h-full bg-neutral-800/60 hidden">
-                <div class="modal_content relative  w-1/4 h-1/4 bg-white rounded-md cursor-pointer" title="reserve">
-                    <button onclick="closeModal()" id="button_close" type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-end text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                <div class="modal_content relative  w-1/4 h-1/4 bg-white rounded-md" title="reserve">
+                    <div class="w-full flex items-center justify-end">
+                    <button onclick="closeModal()" id="button_close" type="button" class="bg-white cursor-pointer rounded-md p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                         <span class="sr-only">Close menu</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                </button><div class="modal_text text-center pt-10 leading-loose">`
+                </button></div><div class="modal_text text-center pt-10 leading-loose">`
             if (name == "False" || name == "false") {
                 temp_html += `<p><span class="underline font-bold">${currentUserName}</span>님 예약 가능</p>
                     <p>이용시간: <span class="underline font-bold">${time}시 ~ ${time + 1}시<span> </p>
-                    <button id="button_reserve" class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded">예약하기</button>`
+                    <button id="button_reserve" class="mt-6 bg-green-600 text-white hover:bg-green-700 ease-out duration-300 font-semibold py-2 px-4 border border-gray-400 rounded cursor-pointer">예약하기</button>`
             } else {
                 temp_html += `<p>예약자 <span class="underline font-bold">${name}</span>님</p>
                 <p>이용시간: <span class="underline font-bold">${time}시 ~ ${time + 1}시</span> </p>`
                 if (userId == currentUserId) {
-                    temp_html += `<button id="button_cancel" class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded">취소하기</button>`
+                    temp_html += `<button id="button_cancel" class="mt-6 bg-red-600 text-white hover:bg-red-700 ease-out duration-300 font-semibold py-2 px-4 border border-gray-400 rounded cursor-pointer">취소하기</button>`
                 }
             }
             temp_html += `</div></div></div>`
@@ -74,7 +75,8 @@
                         window.location.reload();
                     } else {
                         alert("서버 오류!")
-                        window.location.reload()                    }
+                        window.location.reload()
+                    }
                 }
             })
         }
@@ -83,7 +85,7 @@
             $(".modal").fadeOut();
             $(".modal").remove();
         }
-        $(document).on("click", ".card", function () {
+        $(document).on("click", ".time_card", function () {
             let id = $(this).attr("id");
             let time = Number($(`#${id} #time`).text());
             let userId = $(`#${id} #userID`).val();
@@ -118,19 +120,31 @@
         <a href="/" class="block">
             <h1 class="text-4xl text-green-700 font-bold">Kratopia</h1>
         </a>
-        <span class="text-green-700 font-bold text-2xl cursor-pointer" onclick="logout()">로그아웃</span>
+        <span
+            class="text-green-700 font-bold text-2xl cursor-pointer rounded-lg hover:bg-stone-300 activate:bg-stone-600 ease-out duration-300 w-28 text-center"
+            onclick="logout()">Logout</span>
     </div>
     <span
         class="text-4xl text-green-700 font-bold flex w-full justify-center mb-12">{{reservations[0][0].class}}반!</span>
 
-    <div class="flex w-full justify-center mb-40">
+    <div class="flex w-full justify-center">
+        <div class="text-2xl font-bold text-green-700 w-24 text-center">
+            <div class="h-16"></div>
+            {% for i in range(17) %}
+            <div class="h-14 mb-0.5 leading-10">{{reservations[0][i].time}}시</div>
+            {% endfor %}
+        </div>
         {% for date in range(7) %}
-        <div class="week flex flex-col mx-1">
+        <div class="week flex flex-col mx-1 mb-40">
+            {% if toDay['weekday'] == date %}
+            <span class="text-4xl text-green-700 font-bold text-center mb-6 rounded-full bg-white">{{week[date]}}</span>
+            {% else %}
             <span class="text-4xl text-green-700 font-bold text-center mb-6">{{week[date]}}</span>
+            {% endif %}
             {% for time in range(17) %}
             {% if reservations[date][time].userID == False %}
             <div id="{{reservations[date][time].timeID}}"
-                class="card w-40 text-center mb-2 cursor-pointer ease-out duration-300 hover:bg-slate-300">
+                class="card time_card w-40 text-center mb-2 cursor-pointer ease-out duration-300 hover:bg-slate-300">
                 <div>
                     <span id="time">{{reservations[date][time].time}}</span><span>시</span>
                 </div>
@@ -145,7 +159,7 @@
             </div>
             {% elif reservations[date][time].userID == user_id %}
             <div id="{{reservations[date][time].timeID}}"
-                class="card w-40 text-center mb-2 bg-orange-600 text-white cursor-pointer ease-out duration-300 hover:bg-orange-700">
+                class="card time_card w-40 text-center mb-2 bg-orange-600 text-white cursor-pointer ease-out duration-300 hover:bg-orange-700">
                 <div>
                     <span id="time">{{reservations[date][time].time}}</span><span>시</span>
                 </div>
@@ -160,7 +174,7 @@
             </div>
             {% else %}
             <div id="{{reservations[date][time].timeID}}"
-                class="card w-40 text-center mb-2 bg-indigo-500 text-white cursor-pointer ease-out duration-300 hover:bg-indigo-600">
+                class="card time_card w-40 text-center mb-2 bg-indigo-500 text-white cursor-pointer ease-out duration-300 hover:bg-indigo-600">
                 <div>
                     <span id="time">{{reservations[date][time].time}}</span><span>시</span>
                 </div>

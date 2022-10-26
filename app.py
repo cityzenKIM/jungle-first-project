@@ -34,12 +34,12 @@ def listPage():
             for i in range(0, 7):
                 reservation = list(dblaundry.reservations.find({'date':i, 'class':'red'}, {'_id':False}))
                 reservations.append(reservation)
-            return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
+            return render_template('index.html', toDay = weekDay, week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
         elif user_info['class'] == 'blue':
             for i in range(0, 7):
                 reservation = list(dblaundry.reservations.find({'date':i, 'class':'blue'}, {'_id':False}))
                 reservations.append(reservation)
-            return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
+            return render_template('index.html', toDay = weekDay, week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
     except jwt.ExpiredSignatureError:
         return redirect('loginpage')
     except jwt.exceptions.DecodeError:
@@ -51,6 +51,7 @@ def loginPage():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
+        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
         return redirect('/')
     except jwt.ExpiredSignatureError:
@@ -70,6 +71,7 @@ def login():
             'exp':datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
+        # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result':'success', 'token':token})
     else:
         return jsonify({'result':'fail', 'msg':'아이디 또는 비밀번호가 일치하지 않습니다.'})
