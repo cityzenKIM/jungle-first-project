@@ -48,18 +48,6 @@ def listPage():
     except jwt.exceptions.DecodeError:
         return redirect('loginpage')
 
-@app.route('/reservepage')
-def reservePage():
-    # time_receive = request.form['time_give']
-    # id_receive = request.form['id_give']
-    # name_receive = request.form['name_receive']
-    time_receive = 9
-    userId_receive = "1234"
-    name_receive = "김태준"
-    reservation = {'time': time_receive, 'userId':  userId_receive, 'name': name_receive}
-    userId = "1234"
-
-    return render_template('reserve.html', reservation=reservation, userId=userId)
 
 @app.route('/loginpage')
 def loginPage():
@@ -101,14 +89,14 @@ def update_reservation():
     name_receive = request.form['name_give']
     userId_receive = request.form['userId_give']
    
-    dblaundry.reservations.find_one_and_update({'_id': ObjectId(id_receive)}, {'$set': {'name': name_receive, 'userId': userId_receive}})
+    dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
 
 # 예약취소 api
 @app.route('/reserve/delete', methods=["POST"])
 def delete_reservation():
     id_receive = request.form['id_give']
-    dblaundry.reservations.find_one_and_update({'_id': ObjectId(id_receive)}, {'$set': {'name': '', 'userId': ''}})
+    dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': False, 'userID': False}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
 
 @app.route('/signup', methods=['POST'])
