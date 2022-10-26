@@ -84,7 +84,6 @@ def update_reservation():
     name_receive = request.form['name_give']
     userId_receive = request.form['userId_give']
     reservation = dblaundry.reservations.find_one({'timeID': id_receive})
-    print(reservation)
     if reservation['name'] == False:
         dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
         return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
