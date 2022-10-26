@@ -15,8 +15,8 @@
             id = $('#user_id').val()
             pw = $('#user_pw').val()
             pwck = $('#user_pwck').val()
-            gender = $('input[name=gender]').val()
-            jungle_class = $('input[name=class]').val()
+            gender = $('input[name=gender]:checked').val()
+            jungle_class = $('input[name=class]:checked').val()
             if (pw == pwck) {
                 $.ajax({
                     type: 'POST',
@@ -25,16 +25,19 @@
                     success: function (res) {
                         if (res['result'] == 'nameerr') {
                             alert(res['msg'])
+                            $('#user_name').val('').focus()
                         } else if (res['result'] == 'iderr') {
                             alert(res['msg'])
                             $('#user_id').val('').focus()
                         } else if (res['result'] == 'pwerr') {
                             alert(res['msg'])
-                            $('#user_name').val('').focus()
+                            $('#user_pw').val('').focus()
                         } else if (res['result'] == 'nameoverlap') {
                             alert(res['msg'])
+                            $('#user_name').val('').focus()
                         } else if (res['result'] == 'idoverlap') {
                             alert(res['msg'])
+                            $('#user_id').val('').focus()
                         } else if (res['result'] == 'None') {
                             alert(res['msg'])
                         } else {
