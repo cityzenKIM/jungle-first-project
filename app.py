@@ -6,7 +6,6 @@ client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb
 dblaundry = client.dblaundry
 
 import datetime
-from datetime import timedelta, datetime
 from bson import ObjectId
 import hashlib
 import jwt
@@ -19,6 +18,12 @@ def listPage():
     token_receive = request.cookies.get('mytoken')
     reservations = []
     week = ['월', '화', '수', '목', '금', '토', '일']
+    # dblaundry.thisweekday.insert_one({'weekday':2, 'week': 'day'})
+    thisWeekDay = datetime.datetime.today().weekday()
+    weekDay = dblaundry.thisweekday.find_one({'week':'day'}, {'_id':False})
+    if thisWeekDay != weekDay['weekday']:
+        dblaundry.reservations.update_many({'date':weekDay['weekday']}, {'$set':{'name':False, 'userID':False}})
+        dblaundry.thisweekday.update_one({'week':'day'}, {'$set':{'weekday':thisWeekDay}})
     try:
         # Class = ['red', 'blue']
         # for c in range(2):
@@ -77,7 +82,7 @@ def login():
     if result is not None:
         payload = {
             'id':id_receive,
-            'exp':datetime.utcnow() + timedelta(hours=1)
+            'exp':datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
         # print(payload)
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
