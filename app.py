@@ -7,7 +7,6 @@ client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb
 dblaundry = client.dblaundry
 
 import datetime
-from bson import ObjectId
 import hashlib
 import jwt
 import uuid
@@ -27,12 +26,6 @@ def listPage():
         dblaundry.reservations.update_many({'date':weekDay['weekday']}, {'$set':{'name':False, 'userID':False}})
         dblaundry.thisweekday.update_one({'week':'day'}, {'$set':{'weekday':thisWeekDay}})
     try:
-        # Class = ['red', 'blue']
-        # for c in range(2):
-        #     for date in range(7):
-        #         for time in range(7, 24):
-        #             timeID = str(uuid.uuid4())
-        #             dblaundry.reservations.insert_one({'class': Class[c],'timeID':timeID , 'date':date, 'time':time, 'name':False, 'userID':False})
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
         if user_info['class'] == 'red':
@@ -90,9 +83,12 @@ def update_reservation():
     id_receive = request.form['id_give']
     name_receive = request.form['name_give']
     userId_receive = request.form['userId_give']
-   
-    dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
-    return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
+    reservation = dblaundry.reservations.find_one({'timeID': id_receive})
+    if reservation['name'] == "false":
+        dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
+        return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
+    else:
+        return jsonify({'result': 'fail', 'msg': '이미 예약된 시간입니다.'})
 
 # 예약취소 api
 @app.route('/reserve/delete', methods=["POST"])
@@ -100,6 +96,8 @@ def delete_reservation():
     id_receive = request.form['id_give']
     dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': False, 'userID': False}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
+
+
 
 @app.route('/signup', methods=['POST'])
 def signup():
