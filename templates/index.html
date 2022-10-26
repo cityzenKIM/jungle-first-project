@@ -11,38 +11,24 @@
     <title>Kratopia</title>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <style>
-        .card {
-            background-color: beige;
-            margin-top: 5px;
-            border: 1px solid #000;
-        }
-
-        .modal_content{
-            /* width:400px; height:300px;
-            background:#fff; border-radius:10px; */
-            margin-top:-100px; margin-left:-200px;
-            cursor:pointer;
-        } 
-    </style>
     <script>
 
         function makeModal(id, time, name, userId, currentUserId, currentUserName) {
-            let temp_html = `<div class="modal fixed w-full h-full top-0 left-0 bg-neutral-800/60 hidden">
-                <div class="modal_content relative top-1/2 left-1/2 w-1/3 h-1/4 bg-white rounded-md" title="reserve">
-                    <button id="button_close" type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-end text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            let temp_html = `<div class="modal flex items-center justify-center fixed w-full h-full bg-neutral-800/60 hidden">
+                <div class="modal_content relative  w-1/4 h-1/4 bg-white rounded-md cursor-pointer" title="reserve">
+                    <button onclick="closeModal()" id="button_close" type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-end text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                         <span class="sr-only">Close menu</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                 </button><div class="modal_text text-center pt-10 leading-loose">`
             if (name == "False" || name == "false") {
-                temp_html += `<p><a class="underline decoration-green-600">${currentUserName}</a>님 예약 가능</p>
-                    <p>이용시간: ${time}시 ~ ${time + 1}시 </p>
+                temp_html += `<p><span class="underline font-bold">${currentUserName}</span>님 예약 가능</p>
+                    <p>이용시간: <span class="underline font-bold">${time}시 ~ ${time + 1}시<span> </p>
                     <button id="button_reserve" class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded">예약하기</button>`
             } else {
-                temp_html += `<p>예약자 ${name}님</p>
-                <p>이용시간: ${time}시 ~ ${time + 1}시 </p>`
+                temp_html += `<p>예약자 <span class="underline font-bold">${name}</span>님</p>
+                <p>이용시간: <span class="underline font-bold">${time}시 ~ ${time + 1}시</span> </p>`
                 if (userId == currentUserId){
                     temp_html += `<button id="button_cancel" class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded">취소하기</button>`
                 }  
@@ -83,6 +69,11 @@
                 }
             })
         }
+        
+        function closeModal() {
+            $(".modal").fadeOut();
+            $(".modal").remove();
+        }
         $(document).on("click", ".card", function(){
 
                     let id = $(this).attr("id");
@@ -97,6 +88,7 @@
                     $(this).parent().parent().parent().append(temp_html);
 
                     $(".modal").fadeIn();
+                    $(".modal").css({'display':'flex'});
 
                     $("#button_reserve").click(function() {
                         makeReservation(id, currentUserId, currentUserName);
@@ -105,16 +97,6 @@
                     });
                     $("#button_cancel").click(function(){
                         cancelReservation(id);
-                        $(".modal").fadeOut();
-                        window.location.href = '/'
-                    });
-
-                    // $(".modal_content").click(function(){
-                    //     $(".modal").fadeOut();
-                    //     window.location.href = '/';
-                        
-                    // });
-                    $("#button_close").click(function(){
                         $(".modal").fadeOut();
                         window.location.href = '/'
                     });

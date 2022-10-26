@@ -1,10 +1,9 @@
 from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
-import certifi
-ca=certifi.where()
+
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile=ca)
+client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
 dblaundry = client.dblaundry
 
 import datetime
