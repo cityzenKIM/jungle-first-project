@@ -8,7 +8,6 @@ client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb
 dblaundry = client.dblaundry
 
 import datetime
-from bson import ObjectId
 import hashlib
 import jwt
 import uuid
