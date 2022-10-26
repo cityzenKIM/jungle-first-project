@@ -1,10 +1,9 @@
 from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
-import certifi
-ca=certifi.where()
+
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile=ca)
+client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
 dblaundry = client.dblaundry
 
 import datetime
@@ -84,9 +83,12 @@ def update_reservation():
     id_receive = request.form['id_give']
     name_receive = request.form['name_give']
     userId_receive = request.form['userId_give']
-   
-    dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
-    return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
+    reservation = dblaundry.reservations.find_one({'timeID': id_receive})
+    if reservation['name'] == "false":
+        dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': name_receive, 'userID': userId_receive}})
+        return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
+    else:
+        return jsonify({'result': 'fail', 'msg': '이미 예약된 시간입니다.'})
 
 # 예약취소 api
 @app.route('/reserve/delete', methods=["POST"])
@@ -94,6 +96,8 @@ def delete_reservation():
     id_receive = request.form['id_give']
     dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': False, 'userID': False}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
+
+
 
 @app.route('/signup', methods=['POST'])
 def signup():
