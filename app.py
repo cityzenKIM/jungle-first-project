@@ -1,9 +1,12 @@
 from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
-
+# import certifi
+# ca=certifi.where()
+# from pymongo import MongoClient
+# client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile=ca)
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
+client = MongoClient('mongodb://ajm0718:qhemzk0204@15.165.248.49', 27017)
 dblaundry = client.dblaundry
 
 import datetime
@@ -19,7 +22,6 @@ def listPage():
     token_receive = request.cookies.get('mytoken')
     reservations = []
     week = ['월', '화', '수', '목', '금', '토', '일']
-    # dblaundry.thisweekday.insert_one({'weekday':2, 'week': 'day'})
     thisWeekDay = datetime.datetime.today().weekday()
     weekDay = dblaundry.thisweekday.find_one({'week':'day'}, {'_id':False})
     if thisWeekDay != weekDay['weekday']:
@@ -48,7 +50,7 @@ def listPage():
 def loginPage():
     token_receive = request.cookies.get('mytoken')
     try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
         user_info = dblaundry.users.find_one({'id':payload['id']})
         return redirect('/')
     except jwt.ExpiredSignatureError:
@@ -67,8 +69,7 @@ def login():
             'id':id_receive,
             'exp':datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
-        # print(payload)
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
         return jsonify({'result':'success', 'token':token})
     else:
         return jsonify({'result':'fail', 'msg':'아이디 또는 비밀번호가 일치하지 않습니다.'})
@@ -132,4 +133,4 @@ def signup():
         return jsonify({'result':'success', 'msg':'signup'})
 
 if __name__ == '__main__':
-    app.run('15.165.248.49', port=5000)
+    app.run('0.0.0.0', port=5000)
