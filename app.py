@@ -48,10 +48,6 @@ def listPage():
     except jwt.exceptions.DecodeError:
         return redirect('loginpage')
 
-@app.route('/reservepage')
-def reservePage():
-
-    return render_template('reserve.html')
 
 @app.route('/loginpage')
 def loginPage():
