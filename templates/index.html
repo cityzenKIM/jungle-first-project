@@ -19,8 +19,10 @@
     <script>
         function logout() {
             $.removeCookie('mytoken')
+            alert('로그아웃!')
             window.location.href = '/loginpage'
         }
+        
         function makeModal(id, time, name, userId, currentUserId, currentUserName) {
             let temp_html = `<div class="modal flex items-center justify-center fixed w-full h-full bg-neutral-800/60 hidden">
                 <div class="modal_content relative  w-1/4 h-1/4 bg-white rounded-md" title="reserve">
@@ -85,6 +87,7 @@
             $(".modal").fadeOut();
             $(".modal").remove();
         }
+
         $(document).on("click", ".time_card", function () {
             let id = $(this).attr("id");
             let time = Number($(`#${id} #time`).text());
@@ -94,9 +97,7 @@
             let currentUserName = $("#currentUserName").val();
 
             let temp_html = makeModal(id, time, name, userId, currentUserId, currentUserName)
-
-            $(this).parent().parent().parent().append(temp_html);
-
+            $('body').append(temp_html);
 
             $(".modal").fadeIn();
             $(".modal").css({ 'display': 'flex' });
@@ -135,11 +136,11 @@
             {% endfor %}
         </div>
         {% for date in range(7) %}
-        <div class="week flex flex-col mx-1 mb-40">
+        <div class="week flex flex-col mx-1 mb-28 items-center">
             {% if toDay['weekday'] == date %}
-            <span class="text-4xl text-green-700 font-bold text-center mb-6 rounded-full bg-white">{{week[date]}}</span>
+            <span class="text-4xl text-green-700 font-bold text-center mb-6 rounded-full bg-white w-12 h-12">{{week[date]}}</span>
             {% else %}
-            <span class="text-4xl text-green-700 font-bold text-center mb-6">{{week[date]}}</span>
+            <span class="text-4xl text-green-700 font-bold text-center mb-6 w-12 h-12">{{week[date]}}</span>
             {% endif %}
             {% for time in range(17) %}
             {% if reservations[date][time].userID == False %}
@@ -191,6 +192,16 @@
             {% endfor %}
         </div>
         {% endfor %}
+    </div>
+    <div class="mb-28 w-full flex justify-center">
+        <div class="bg-white w-1/2 h-60 px-20 rounded">
+            <ul class="flex flex-col h-full justify-center">
+                <li class="py-1 font-bold text-xl">- 이용 수칙 -</li>
+                <li>1. 지난 요일들은 다음주 입니다.</li>
+                <li>2. 예약은 1주에 4번 정도만 해주세요.</li>
+                <li>3. 24시가 지나면 금일 기록은 삭제됩니다.</li>
+            </ul>
+        </div>
     </div>
     <input id="currentUserId" type="hidden" value={{user_id}}>
     <input id="currentUserName" type="hidden" value={{user_name}}>

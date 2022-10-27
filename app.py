@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 app = Flask(__name__)
 
 # import certifi
@@ -50,8 +50,8 @@ def listPage():
 def loginPage():
     token_receive = request.cookies.get('mytoken')
     try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
-        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
         return redirect('/')
     except jwt.ExpiredSignatureError:
@@ -70,8 +70,8 @@ def login():
             'id':id_receive,
             'exp':datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
-        # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result':'success', 'token':token})
     else:
         return jsonify({'result':'fail', 'msg':'아이디 또는 비밀번호가 일치하지 않습니다.'})
@@ -99,8 +99,6 @@ def delete_reservation():
     id_receive = request.form['id_give']
     dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': False, 'userID': False}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
-
-
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -135,4 +133,4 @@ def signup():
         return jsonify({'result':'success', 'msg':'signup'})
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000)
+    app.run('0.0.0.0', port=5001, debug=True)
