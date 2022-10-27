@@ -1,9 +1,12 @@
-from flask import Flask, render_template, jsonify, request, redirect
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 app = Flask(__name__)
 
-
+# import certifi
+# ca=certifi.where()
+# from pymongo import MongoClient
+# client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile=ca)
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
+client = MongoClient('mongodb://ajm0718:qhemzk0204@15.165.248.49', 27017)
 dblaundry = client.dblaundry
 
 import datetime
@@ -19,7 +22,6 @@ def listPage():
     token_receive = request.cookies.get('mytoken')
     reservations = []
     week = ['월', '화', '수', '목', '금', '토', '일']
-    # dblaundry.thisweekday.insert_one({'weekday':2, 'week': 'day'})
     thisWeekDay = datetime.datetime.today().weekday()
     weekDay = dblaundry.thisweekday.find_one({'week':'day'}, {'_id':False})
     if thisWeekDay != weekDay['weekday']:
@@ -32,12 +34,12 @@ def listPage():
             for i in range(0, 7):
                 reservation = list(dblaundry.reservations.find({'date':i, 'class':'red'}, {'_id':False}))
                 reservations.append(reservation)
-            return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
+            return render_template('index.html', toDay = weekDay, week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
         elif user_info['class'] == 'blue':
             for i in range(0, 7):
                 reservation = list(dblaundry.reservations.find({'date':i, 'class':'blue'}, {'_id':False}))
                 reservations.append(reservation)
-            return render_template('index.html', week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
+            return render_template('index.html', toDay = weekDay, week = week, reservations = reservations, user_name = user_info['name'], user_id = user_info['userID'])
     except jwt.ExpiredSignatureError:
         return redirect('loginpage')
     except jwt.exceptions.DecodeError:
@@ -48,6 +50,7 @@ def listPage():
 def loginPage():
     token_receive = request.cookies.get('mytoken')
     try:
+        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
         return redirect('/')
@@ -67,7 +70,7 @@ def login():
             'id':id_receive,
             'exp':datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
-        # print(payload)
+        # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result':'success', 'token':token})
     else:
@@ -96,8 +99,6 @@ def delete_reservation():
     id_receive = request.form['id_give']
     dblaundry.reservations.find_one_and_update({'timeID': id_receive}, {'$set': {'name': False, 'userID': False}})
     return jsonify({'result': 'success', 'msg': 'POST 연결되었습니다!'})
-
-
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -132,4 +133,4 @@ def signup():
         return jsonify({'result':'success', 'msg':'signup'})
 
 if __name__ == '__main__':
-    app.run('15.165.248.49', port=5000)
+    app.run('0.0.0.0', port=5001, debug=True)

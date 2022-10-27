@@ -1,10 +1,12 @@
 import certifi
 ca=certifi.where()
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile=ca)
+client = MongoClient('mongodb://ajm0718:qhemzk0204@15.165.248.49', 27017)
 dblaundry = client.dblaundry
 
 import uuid
+
+dblaundry.thisweekday.insert_one({'weekday':2, 'week': 'day'})
 
 Class = ['red', 'blue']
 for c in range(2):
