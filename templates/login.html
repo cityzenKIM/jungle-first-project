@@ -46,22 +46,36 @@
         <h1 class="text-4xl text-green-700 font-bold">Kratopia</h1>
     </a>
     <div class="flex h-screen flex-col items-center justify-center">
-        <h2 class="text-green-700 font-bold text-4xl mb-12">크래토피아</h2>
+        <div class="flex items-center justify-center mb-12">
+            <img src="{{url_for ('static', filename='laundry.png')}}" alt="laundry-machine" class="w-16 mr-2">
+            <h2 class="text-green-700 font-bold text-4xl">크래토피아</h2>
+        </div>
         <div class="w-60 flex justify-between">
             <label for="user_id" class="text-2xl text-green-700 font-semibold">ID</label>
-            <input onkeyup="enterEvent()" id="user_id" class="w-4/5 rounded-lg text-center" type="text" autocomplete="off">
+            <input onkeyup="enterEvent()" id="user_id" class="w-4/5 rounded-lg text-center" type="text"
+                autocomplete="off">
         </div>
         <div class="w-60 flex justify-between mt-6">
             <label for="user_pw" class="text-2xl text-green-700 font-semibold">PW</label>
             <input onkeyup="enterEvent()" id="user_pw" class="w-4/5 rounded-lg text-center" type="password">
         </div>
-        <div class="my-6">
-            <button id="loginBtn" onclick="login()"
-                class="w-20 text-center text-3xl text-green-700 font-semibold rounded-lg ease-out duration-300 hover:bg-white activate:bg-stone-600">login</button>
-        </div>
-        <div>
-            <a href="/signuppage"
-                class="block text-center w-20 text-1xl text-green-700 font-semibold rounded-lg ease-out duration-300 hover:bg-white activate:bg-stone-600">회원가입</a>
+        <div class="flex justify-center">
+            <div class='button mr-3 mt-6 w-32 h-12 bg-green-500 rounded-lg cursor-pointer select-none
+            active:translate-y-2  active:[box-shadow:0_0px_0_0_green,0_0px_0_0_green]
+            active:border-b-[0px]
+            transition-all duration-150 [box-shadow:0_10px_0_0_green,0_15px_0_0_black]
+            border-b-[1px] border-green-400'>
+                <span id="loginBtn" onclick="login()"
+                    class='flex flex-col justify-center items-center h-full text-white font-bold text-xl '>로그인</span>
+            </div>
+            <div class='button mt-6 w-32 h-12 bg-green-500 rounded-lg cursor-pointer select-none
+            active:translate-y-2  active:[box-shadow:0_0px_0_0_green,0_0px_0_0_green]
+            active:border-b-[0px]
+            transition-all duration-150 [box-shadow:0_10px_0_0_green,0_15px_0_0_black]
+            border-b-[1px] border-green-400'>
+                <a href="/signuppage"
+                    class='flex flex-col justify-center items-center h-full text-white font-bold text-xl '>회원가입</a>
+            </div>
         </div>
     </div>
 </body>

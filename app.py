@@ -50,8 +50,8 @@ def listPage():
 def loginPage():
     token_receive = request.cookies.get('mytoken')
     try:
-        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256']).decode('utf8')
+        # payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = dblaundry.users.find_one({'id':payload['id']})
         return redirect('/')
     except jwt.ExpiredSignatureError:
@@ -70,8 +70,8 @@ def login():
             'id':id_receive,
             'exp':datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
-        # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf8')
+        # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result':'success', 'token':token})
     else:
         return jsonify({'result':'fail', 'msg':'아이디 또는 비밀번호가 일치하지 않습니다.'})
@@ -133,4 +133,4 @@ def signup():
         return jsonify({'result':'success', 'msg':'signup'})
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5001, debug=True)
+    app.run('0.0.0.0', port=5000)
