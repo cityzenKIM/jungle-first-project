@@ -138,9 +138,9 @@
         {% for date in range(7) %}
         <div class="week flex flex-col mx-1 mb-28 items-center">
             {% if toDay['weekday'] == date %}
-            <span class="text-4xl text-green-700 font-bold text-center mb-6 rounded-full bg-white w-12 h-12">{{week[date]}}</span>
+            <span class="text-4xl text-green-700 font-bold mb-3 rounded-full bg-white w-12 h-12 flex items-center justify-center">{{week[date]}}</span>
             {% else %}
-            <span class="text-4xl text-green-700 font-bold text-center mb-6 w-12 h-12">{{week[date]}}</span>
+            <span class="text-4xl text-green-700 font-bold mb-3 w-12 h-12 flex items-center justify-center">{{week[date]}}</span>
             {% endif %}
             {% for time in range(17) %}
             {% if reservations[date][time].userID == False %}
@@ -196,10 +196,10 @@
     <div class="mb-28 w-full flex justify-center">
         <div class="bg-white w-1/2 h-60 px-20 rounded">
             <ul class="flex flex-col h-full justify-center">
-                <li class="py-1 font-bold text-xl">- 이용 수칙 -</li>
-                <li>1. 지난 요일들은 다음주 입니다.</li>
-                <li>2. 예약은 1주에 4번 정도만 해주세요.</li>
-                <li>3. 24시가 지나면 금일 기록은 삭제됩니다.</li>
+                <li class="py-1 font-bold text-xl text-center">- 이용 안내 -</li>
+                <li class="py-1 font-semibold">1. 지난 요일들은 다음주 입니다.</li>
+                <li class="py-1 font-semibold">2. 예약은 양심적으로 해주세요.</li>
+                <li class="py-1 font-semibold">3. 24시가 지나면 금일 기록은 삭제됩니다.</li>
             </ul>
         </div>
     </div>
