@@ -1,9 +1,10 @@
 from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
-
+import certifi
+ca = certifi.where()
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test')
+client = MongoClient('mongodb+srv://tajunkim:wns41224--@cluster0.bxexa3c.mongodb.net/test', tlsCAFile= ca)
 dblaundry = client.dblaundry
 
 import datetime
@@ -132,4 +133,4 @@ def signup():
         return jsonify({'result':'success', 'msg':'signup'})
 
 if __name__ == '__main__':
-    app.run('15.165.248.49', port=5000)
+    app.run('0.0.0.0', port=5000, debug='on')
